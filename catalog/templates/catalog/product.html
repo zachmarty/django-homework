@@ -1,0 +1,17 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="card col-12 text-center">
+        <div class="card-header">
+            <h1>{{product.name}}</h1>
+        </div>
+        <div class="card-body">
+            <img src="{{MEDIA}}/media/{{product.image}}">
+            <h3>{{product.description}}</h3>
+            <h3>{{product.price}}</h3>
+            <h3>{{product.category}}</h3>
+            <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:index'%}">Вернуться</a>
+        </div>
+    </div>
+</div>
+{%endblock%}

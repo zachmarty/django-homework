@@ -57,7 +57,7 @@
             "image": "",
             "category": 1,
             "price": 10.0,
-            "last_fix_date": "2023-11-28"
+            "last_fix_date": "2023-11-28T00:00:00Z"
         }
     },
     {
@@ -70,7 +70,7 @@
             "image": "",
             "category": 1,
             "price": 10.0,
-            "last_fix_date": "2023-11-28"
+            "last_fix_date": "2023-11-28T00:00:00Z"
         }
     },
     {
@@ -83,7 +83,7 @@
             "image": "",
             "category": 1,
             "price": 10.0,
-            "last_fix_date": "2023-11-28"
+            "last_fix_date": "2023-11-28T00:00:00Z"
         }
     },
     {
@@ -96,7 +96,7 @@
             "image": "",
             "category": 1,
             "price": 10.0,
-            "last_fix_date": "2023-11-28"
+            "last_fix_date": "2023-11-28T00:00:00Z"
         }
     },
     {
@@ -109,7 +109,7 @@
             "image": "",
             "category": 1,
             "price": 10.0,
-            "last_fix_date": "2023-11-28"
+            "last_fix_date": "2023-11-28T00:00:00Z"
         }
     },
     {
@@ -122,7 +122,7 @@
             "image": "",
             "category": 1,
             "price": 10.0,
-            "last_fix_date": "2023-11-28"
+            "last_fix_date": "2023-11-28T00:00:00Z"
         }
     },
     {
@@ -135,7 +135,7 @@
             "image": "",
             "category": 1,
             "price": 10.0,
-            "last_fix_date": "2023-11-28"
+            "last_fix_date": "2023-11-28T00:00:00Z"
         }
     }
 ]

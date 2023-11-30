@@ -3,15 +3,15 @@ from django.core.management import BaseCommand
 from catalog.models import Category
 import psycopg2
 
+
 class Command(BaseCommand):
-    
     def handle(self, *args: Any, **options: Any):
         Category.objects.all().delete()
         settings = {
-            'user':'postgres',
-            'host':'localhost',
-            'password':1,
-            'dbname':'project5'
+            "user": "postgres",
+            "host": "localhost",
+            "password": 1,
+            "dbname": "project5",
         }
         conn = psycopg2.connect(**settings)
         cur = conn.cursor()
@@ -20,16 +20,16 @@ class Command(BaseCommand):
         cur.close()
         conn.close()
         category_list = [
-            {'name':'test', 'description':'test'},
-            {'name':'test', 'description':'test'},
-            {'name':'test', 'description':'test'},
-            {'name':'test', 'description':'test'},
-            {'name':'test', 'description':'test'},
+            {"name": "test", "description": "test"},
+            {"name": "test", "description": "test"},
+            {"name": "test", "description": "test"},
+            {"name": "test", "description": "test"},
+            {"name": "test", "description": "test"},
         ]
 
         category_for_create = []
         for item in category_list:
             category_for_create.append(Category(**item))
-        
+
         Category.objects.bulk_create(category_for_create)
-        print('ok')
+        print("ok")
