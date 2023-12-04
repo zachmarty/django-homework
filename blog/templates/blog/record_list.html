@@ -1,0 +1,28 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="row text-center">
+    {% for record in record_list %}
+    <div class="col-3">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">{{ record.title|title }}</h4>
+            </div>
+            <div class="card-body">
+                <h4>{{record.content|truncatechars:100 }}</h4>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <a class="p-2 btn btn-outline-primary" href="{% url 'blog:view' record.pk %}">Подробнее</a>
+                </div>
+                <div class="row">
+                    <a class="p-2 btn btn-outline-secondary" href="{% url 'blog:edit' record.pk %}">Редактировать</a>
+                </div>
+                <div class="row">
+                    <a class="p-2 btn btn-outline-danger" href="{% url 'blog:delete' record.pk %}">Удалить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
