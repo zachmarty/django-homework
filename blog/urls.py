@@ -10,4 +10,6 @@ urlpatterns = [
     path("edit/<int:pk>", RecordUpdateView.as_view(), name="edit"),
     path("view/<int:pk>", RecordDetailView.as_view(), name="view"),
     path("delete/<int:pk>", RecordDeleteView.as_view(), name="delete"),
+    path("like/<int:pk>", add_attr, name="like"),
+    path("dislike/<int:pk>", les_attr, name="dislike"),
 ]

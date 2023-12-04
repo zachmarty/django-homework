@@ -11,6 +11,12 @@
                 <div class="card-body">
                     <p>{{record.content}}</p>
                     <p>Просмотров: {{record.views_count}}</p>
+                    <a type="submit" class="btn btn-outline-success" href="{% url 'blog:like' record.pk%}">
+                        <span class="glyphicon-class">like</span>
+                    </a>
+                    <a type="submit" class="btn btn-outline-danger" href="{% url 'blog:dislike' record.pk%}">
+                        <span class="glyphicon-class">dislike</span>
+                    </a>
                 </div>
                 <div class="card-footer">
                     <a type="submit" class="btn btn-primary" href = "{% url 'blog:list' %}">Назад</a>
