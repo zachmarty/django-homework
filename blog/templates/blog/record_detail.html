@@ -11,16 +11,22 @@
                 <div class="card-body">
                     <p>{{record.content}}</p>
                     <p>Просмотров: {{record.views_count}}</p>
-                    <a type="submit" class="btn btn-outline-success" href="{% url 'blog:like' record.pk%}">
-                        <span class="glyphicon-class">like</span>
-                    </a>
-                    <a type="submit" class="btn btn-outline-danger" href="{% url 'blog:dislike' record.pk%}">
-                        <span class="glyphicon-class">dislike</span>
-                    </a>
+                    <form method="post" action="{% url 'blog:like' record.pk%}">
+                        {% csrf_token %}
+                        <button type="submit"class="btn btn-outline-success">
+                            <span class="glyphicon-class">like</span>
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'blog:dislike' record.pk%}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">
+                            <span class="glyphicon-class">dislike</span>
+                        </button>
+                    </form>
                 </div>
                 <div class="card-footer">
-                    <a type="submit" class="btn btn-primary" href = "{% url 'blog:list' %}">Назад</a>
-                    <a type="submit" class="btn btn-primary" href = "{% url 'blog:edit' record.pk%}">Редактировать</a>
+                    <a type="submit" class="btn btn-primary" href="{% url 'blog:list' %}">Назад</a>
+                    <a type="submit" class="btn btn-primary" href="{% url 'blog:edit' record.pk%}">Редактировать</a>
                 </div>
             </div>
         </div>

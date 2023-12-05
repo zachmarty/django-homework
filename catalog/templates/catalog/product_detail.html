@@ -14,7 +14,7 @@
                     <p>Цена: {{product.price}}</p>
                 </div>
                 <div class="card-footer">
-                    <a type="submit" class="btn btn-primary" href = "{% url 'catalog:list' %}">Назад</a>
+                    <a type="submit" class="btn btn-primary" href = "{% url 'catalog:index' %}">Назад</a>
                     <a type="submit" class="btn btn-primary" href = "{% url 'catalog:edit' product.pk%}">Редактировать</a>
                 </div>
             </div>

@@ -5,9 +5,11 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.views.generic.detail import SingleObjectMixin
+from django.views import View
 from blog.models import Record
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import render
+from django.shortcuts import redirect
 from pytils.translit import slugify
 
 
@@ -18,26 +20,32 @@ class RecordCreateView(CreateView):
     success_url = reverse_lazy("blog:list")
 
     def form_valid(self, form):
-        if form.is_valid():
-            new_record = form.save()
-            new_record.slug = slugify(new_record.title)
-            new_record.save()
+        new_record = form.save()
+        new_record.slug = slugify(new_record.title)
+        new_record.save()
         return super().form_valid(form)
 
 
-def add_attr(request, pk):
-    record = Record.objects.get(id=pk)
-    record.attribute += 1
-    record.save()
-    reverse_lazy("blog:list")
+class LikeRecord(SingleObjectMixin, View):
+    model = Record
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwards):
+        record = self.get_object()
+        record.attribute += 1
+        record.save()
+        return redirect(reverse("blog:list"))
 
 
-def les_attr(request, pk):
-    print(pk)
-    record = Record.objects.get(id=pk)
-    record.attribute -= 1
-    record.save()
-    return RecordListView(request)
+class DislikeRecord(SingleObjectMixin, View):
+    model = Record
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwards):
+        record = self.get_object()
+        record.attribute -= 1
+        record.save()
+        return redirect(reverse("blog:list"))
 
 
 class RecordUpdateView(UpdateView):
@@ -47,10 +55,9 @@ class RecordUpdateView(UpdateView):
     success_url = reverse_lazy("blog:list")
 
     def form_valid(self, form):
-        if form.is_valid():
-            new_record = form.save()
-            new_record.slug = slugify(new_record.title)
-            new_record.save()
+        new_record = form.save()
+        new_record.slug = slugify(new_record.title)
+        new_record.save()
         return super().form_valid(form)
 
     def get_success_url(self):

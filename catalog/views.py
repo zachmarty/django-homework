@@ -2,6 +2,8 @@ from django.shortcuts import render
 from catalog.models import Product
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from django.views.generic.detail import SingleObjectMixin
+from django.views import View
 
 
 class ProductListView(ListView):
@@ -15,7 +17,7 @@ class ProductDetailView(DetailView):
 class ProductCreateView(CreateView):
     model = Product
     fields = ('name', 'description', 'image', 'category', 'price')
-    success_url = reverse_lazy('catalog:list')
+    success_url = reverse_lazy('catalog:index')
 
 class ProductUpdateView(UpdateView):
     model = Product
@@ -29,16 +31,20 @@ class ProductDetailView(DetailView):
 
 class ProductDeleteView(DeleteView):
     model = Product
-    success_url = reverse_lazy('catalog:list')
+    success_url = reverse_lazy('catalog:index')
 
 # Create your views here.
 
 
-def contacts(request):
-    if request.method == "POST":
-        return render(request, "catalog/thanks.html")
-    return render(request, "catalog/contacts.html")
+class ProductContacts(SingleObjectMixin, View):
+    model = Product
+    
+    def get(self, request, *args, **kwards):
+        return render(request, 'catalog/contacts.html')
 
+class ProductThanks(SingleObjectMixin, View):
+    model = Product
 
-def test(request):
-    return render(request, "catalog/base.html")
+    def post(self, request, *args, **kwards):
+        return render(request, 'catalog/thanks.html')
+
