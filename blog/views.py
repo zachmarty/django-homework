@@ -34,7 +34,7 @@ class LikeRecord(SingleObjectMixin, View):
         record = self.get_object()
         record.attribute += 1
         record.save()
-        return redirect(reverse("blog:list"))
+        return redirect(reverse("blog:view", kwargs={'pk': record.pk}))
 
 
 class DislikeRecord(SingleObjectMixin, View):
@@ -45,7 +45,7 @@ class DislikeRecord(SingleObjectMixin, View):
         record = self.get_object()
         record.attribute -= 1
         record.save()
-        return redirect(reverse("blog:list"))
+        return redirect(reverse("blog:view", kwargs={'pk': record.pk}))
 
 
 class RecordUpdateView(UpdateView):

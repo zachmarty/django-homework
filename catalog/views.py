@@ -57,7 +57,7 @@ class ProductContacts(SingleObjectMixin, View):
 
 class ProductThanks(SingleObjectMixin, View):
     model = Product
-    http_method_names = ["get"]
+    http_method_names = ["post"]
 
     def post(self, request, *args, **kwards):
         return render(request, "catalog/thanks.html")
