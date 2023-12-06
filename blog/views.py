@@ -72,8 +72,8 @@ class RecordDeleteView(DeleteView):
 class RecordListView(ListView):
     model = Record
 
-    def get_queryset(self, *args, **kwards):
-        queryset = super().get_queryset(*args, **kwards)
+    def get_queryset(self):
+        queryset = super().get_queryset()
         queryset = queryset.filter(attribute__gte=0)
         return queryset
 

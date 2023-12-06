@@ -6,6 +6,7 @@ from django.views.generic import (
     DetailView,
     UpdateView,
     DeleteView,
+    TemplateView
 )
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import SingleObjectMixin
@@ -14,11 +15,6 @@ from django.views import View
 
 class ProductListView(ListView):
     model = Product
-
-
-class ProductDetailView(DetailView):
-    model = Product
-    template_name = "catalog/product.html"
 
 
 class ProductCreateView(CreateView):
@@ -44,10 +40,7 @@ class ProductDeleteView(DeleteView):
     success_url = reverse_lazy("catalog:index")
 
 
-# Create your views here.
-
-
-class ProductContacts(SingleObjectMixin, View):
+class ProductContacts(TemplateView):
     model = Product
     http_method_names = ["get"]
 
@@ -55,7 +48,7 @@ class ProductContacts(SingleObjectMixin, View):
         return render(request, "catalog/contacts.html")
 
 
-class ProductThanks(SingleObjectMixin, View):
+class ProductThanks(TemplateView):
     model = Product
     http_method_names = ["post"]
 
