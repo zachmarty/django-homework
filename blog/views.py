@@ -32,7 +32,7 @@ class LikeRecord(SingleObjectMixin, View):
 
     def post(self, request, *args, **kwards):
         record = self.get_object()
-        record.attribute += 1
+        record.likes_count += 1
         record.save()
         return redirect(reverse("blog:view", kwargs={'pk': record.pk}))
 
@@ -43,7 +43,7 @@ class DislikeRecord(SingleObjectMixin, View):
 
     def post(self, request, *args, **kwards):
         record = self.get_object()
-        record.attribute -= 1
+        record.dislikes_count -= 1
         record.save()
         return redirect(reverse("blog:view", kwargs={'pk': record.pk}))
 
@@ -74,7 +74,7 @@ class RecordListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(attribute__gte=0)
+        queryset = queryset.filter(publicated=True)
         return queryset
 
 

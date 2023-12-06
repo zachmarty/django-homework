@@ -10,11 +10,11 @@ class RecordAdmin(admin.ModelAdmin):
         "id",
         "title",
         "views_count",
-        "attribute",
+        "publicated",
     )
     list_filter = (
         "title",
-        "attribute",
+        "publicated",
         "views_count",
     )
     search_fields = ("title",)
