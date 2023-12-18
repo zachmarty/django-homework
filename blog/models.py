@@ -24,3 +24,17 @@ class Record(models.Model):
         verbose_name = "Запись"
         verbose_name_plural = "Записи"
         ordering = ("title",)
+
+
+class Tag(models.Model):
+    title = models.CharField(max_length=50, verbose_name="Название")
+    description = models.TextField(max_length=1000, verbose_name="Описание", **NULLABLE)
+    record = models.ForeignKey(Record, on_delete=models.CASCADE, verbose_name="Запись")
+
+    def __str__(self) -> str:
+        return f"{self.title}"
+
+    class Meta:
+        verbose_name = "Тег"
+        verbose_name_plural = "Теги"
+        ordering = ("record",)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import Record
+from blog.models import Record, Tag
 
 # Register your models here.
 
@@ -18,3 +18,15 @@ class RecordAdmin(admin.ModelAdmin):
         "views_count",
     )
     search_fields = ("title",)
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "title",
+        "description",
+        "record",
+    )
+    list_filter = ("record",)
+    search_fields = ("title", "record")

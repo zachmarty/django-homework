@@ -11,6 +11,7 @@ from django.views.generic import (
 from django.urls import reverse, reverse_lazy
 from django.views.generic.detail import SingleObjectMixin
 from django.views import View
+from catalog.forms import ProductForm
 
 
 class ProductListView(ListView):
@@ -19,7 +20,7 @@ class ProductListView(ListView):
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = ("name", "description", "image", "category", "price")
+    form_class = ProductForm
     success_url = reverse_lazy("catalog:index")
 
 

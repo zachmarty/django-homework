@@ -1,12 +1,15 @@
-{% extends 'catalog/base.html' %}
+{% extends 'blog/base.html' %}
 
 {%block content%}
-<div class="col-12">
+<form method="post" enctype="multipart/form-data" class="col-12">
     <div class="row text-center">
         <div class="col-6">
             <div class="card">
+                <div class="card-header">
+                    Запись
+                </div>
                 <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
+                    
                         {% csrf_token %}
                         {{form.as_p}}
                         {% if record %}
@@ -14,10 +17,23 @@
                         {% else %}
                         <button type="submit" class="btn btn-primary">Создать</button>
                         {% endif %}       
-                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    Теги
+                </div>
+                <div class="card-body">
+                    {{formset.management_form}}    
+                    {% for form in formset.forms %}
+                        {{form.as_p}}
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 {%endblock%}

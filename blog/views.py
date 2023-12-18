@@ -7,23 +7,38 @@ from django.views.generic import (
 )
 from django.views.generic.detail import SingleObjectMixin
 from django.views import View
-from blog.models import Record
+from blog.models import Record, Tag
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect
 from pytils.translit import slugify
-
+from blog.forms import RecordForm, TagForm
+from django.forms import inlineformset_factory
 
 class RecordCreateView(CreateView):
     model = Record
-    fields = ("title", "content", "image")
-    template_name = "blog/record_form.html"
+    form_class = RecordForm
     success_url = reverse_lazy("blog:list")
 
     def form_valid(self, form):
         new_record = form.save()
         new_record.slug = slugify(new_record.title)
         new_record.save()
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwards):
+        context_data = super().get_context_data(**kwards)
+        RecordFormset = inlineformset_factory(Record, Tag, form=TagForm, extra=1)
+        if self.request.method == "POST":
+            context_data['formset'] = RecordFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = RecordFormset(instance=self.object)
+        return context_data
+    
 
 
 class LikeRecord(SingleObjectMixin, View):
@@ -43,22 +58,35 @@ class DislikeRecord(SingleObjectMixin, View):
 
     def post(self, request, *args, **kwards):
         record = self.get_object()
-        record.dislikes_count -= 1
+        record.dislikes_count += 1
         record.save()
         return redirect(reverse("blog:view", kwargs={'pk': record.pk}))
 
 
 class RecordUpdateView(UpdateView):
     model = Record
-    fields = ("title", "content", "image")
-    template_name = "blog/record_form.html"
+    form_class = RecordForm
     success_url = reverse_lazy("blog:list")
 
     def form_valid(self, form):
         new_record = form.save()
         new_record.slug = slugify(new_record.title)
         new_record.save()
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwards):
+        context_data = super().get_context_data(**kwards)
+        RecordFormset = inlineformset_factory(Record, Tag, form=TagForm, extra=1)
+        if self.request.method == "POST":
+            context_data['formset'] = RecordFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = RecordFormset(instance=self.object)
+        return context_data
 
     def get_success_url(self):
         return reverse("blog:view", args=[self.kwargs.get("pk")])
