@@ -49,11 +49,11 @@ class ProductUpdateView(UpdateView):
             previous = Version.objects.all(product = new_record)
             for item in previous:
                 item.current = False
-            last = sorted(previous, key=previous.v_number)
+                item.save()
+            last = sorted(previous, key=lambda x: x.v_number)
             self.object.v_number = last.v_number + 1
             formset.save()
             self.object.save()
-            previous.save()
         return super().form_valid(form)
     
     def get_context_data(self, **kwards):
