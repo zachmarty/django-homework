@@ -11,6 +11,43 @@ class RecordForm(forms.ModelForm):
         model = Record
         fields = ("title", "content", "image")
 
+    def clean_name(self):
+        cleaned_data = self.cleaned_data["title"]
+        ban_words = [
+            "казино",
+            "криптовалюса",
+            "крипта",
+            "биржа",
+            "дешево",
+            "бесплатно",
+            "обман",
+            "полиция",
+            "радар",
+        ]
+        for word in ban_words:
+            if word in cleaned_data.lower():
+                raise forms.ValidationError("Запретка в названии продукта")
+            
+        return cleaned_data
+
+    def clean_description(self):
+        cleaned_data = self.cleaned_data["description"]
+        ban_words = [
+            "казино",
+            "криптовалюса",
+            "крипта",
+            "биржа",
+            "дешево",
+            "бесплатно",
+            "обман",
+            "полиция",
+            "радар",
+        ]
+        for word in ban_words:
+            if word in cleaned_data.lower():
+                raise forms.ValidationError("Запретка в описании продукта")
+            
+        return cleaned_data
     
 
 

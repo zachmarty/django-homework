@@ -1,3 +1,4 @@
+from typing import Any
 from django.views.generic import (
     CreateView,
     ListView,
@@ -114,3 +115,9 @@ class RecordDetailView(DetailView):
         self.object.views_count += 1
         self.object.save()
         return super().get_object(queryset)
+    
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        tags = Tag.objects.filter(record = self.object)
+        context['tags'] = tags
+        return context

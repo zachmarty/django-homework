@@ -53,3 +53,10 @@ class Product(models.Model):
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
         ordering = ("name",)
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    v_number = models.IntegerField(default=1)
+    v_name = models.CharField(max_length=100, default="changed")
+    current = models.BooleanField(default=True)
