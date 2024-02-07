@@ -46,12 +46,13 @@ class ProductUpdateView(UpdateView):
         self.object = form.save()
         if formset.is_valid():
             formset.instance = self.object
-            previous = Version.objects.all(product = new_record)
+            previous = Version.objects.filter(product = new_record)
+            print(previous)
             for item in previous:
                 item.current = False
                 item.save()
             last = sorted(previous, key=lambda x: x.v_number)
-            self.object.v_number = last.v_number + 1
+            self.object.v_number = last[0].v_number + 1
             formset.save()
             self.object.save()
         return super().form_valid(form)

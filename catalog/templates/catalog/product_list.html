@@ -1,27 +1,27 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
-<div class="row text-center">
+  <div class="row text-center">
     {% for product in product_list %}
-    <div class="col-3">
+      <div class="col-3">
         <div class="card mb-4 box-shadow">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">{{ product.name|title }}</h4>
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">{{ product.name|title }}</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">{{ product.price }} руб.</h1>
+            <h4>{{ product.description|truncatechars:100 }}</h4>
+            <div class="row">
+              <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:view' product.id %}">Подробнее</a>
             </div>
-            <div class="card-body">
-                <h1 class="card-title pricing-card-title">{{ product.price}} руб.</h1>
-                <h4>{{product.description|truncatechars:100 }}</h4>
-                <div class="row">
-                    <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:view' product.id%}">Подробнее</a>
-                </div>
-                <div class="row">
-                    <a class="p-2 btn btn-outline-secondary" href="{% url 'catalog:edit' product.id%}">Редактировать</a>
-                </div>
-                <div class="row">
-                    <a class="p-2 btn btn-outline-danger" href="{% url 'catalog:delete' product.id%}">Удалить</a>
-                </div>
+            <div class="row">
+              <a class="p-2 btn btn-outline-secondary" href="{% url 'catalog:edit' product.id %}">Редактировать</a>
             </div>
+            <div class="row">
+              <a class="p-2 btn btn-outline-danger" href="{% url 'catalog:delete' product.id %}">Удалить</a>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
     {% endfor %}
-</div>
+  </div>
 {% endblock %}
