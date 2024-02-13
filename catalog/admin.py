@@ -28,6 +28,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Version)
 class VersionAdmin(admin.ModelAdmin):
-    list_display = ("id", "product", "v_number", "v_name", "current")
-    list_filter = ("v_name", "v_number", "current")
+    list_display = ("id", "product", "v_number", "v_name", "current", "add_date")
+    list_filter = ("v_name", "v_number", "current", "add_date")
     search_fields = ("product",)

@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 NULLABLE = {"blank": True, "null": True}
 # Create your models here.
@@ -60,3 +61,9 @@ class Version(models.Model):
     v_number = models.IntegerField(default=1)
     v_name = models.CharField(max_length=100, default="changed")
     current = models.BooleanField(default=True)
+    add_date = models.DateTimeField(default = datetime.datetime.now)
+    
+    class Meta:
+        verbose_name = "Версия"
+        verbose_name_plural = "Версии"
+        ordering = ("v_name",)

@@ -49,4 +49,4 @@ class ProductForm(forms.ModelForm):
 class VersionForm(forms.ModelForm):
     class Meta:
         model = Version
-        fields = ("v_name",)
+        fields = ("v_name", "v_number")

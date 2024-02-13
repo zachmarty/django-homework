@@ -26,44 +26,34 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     success_url = reverse_lazy("catalog:index")
 
-    def form_valid(self, form):
-        new_product = form.save()
-        new_product.save()
-        version = Version.objects.create(product=new_product)
-        version.v_name = "created"
-        version.save()
-        return super().form_valid(form)
-
 
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
     
     def form_valid(self, form):
-        new_record = form.save()
-        new_record.save()
         formset = self.get_context_data()['formset']
         self.object = form.save()
         if formset.is_valid():
             formset.instance = self.object
-            previous = Version.objects.filter(product = new_record)
-            print(previous)
-            for item in previous:
+            formset.save()
+            versions = Version.objects.filter(product = self.object)
+            for item in versions:
                 item.current = False
                 item.save()
-            last = sorted(previous, key=lambda x: x.v_number)
-            self.object.v_number = last[0].v_number + 1
-            formset.save()
-            self.object.save()
+            last = sorted(versions, key=lambda x: x.add_date, reverse=True)
+            print(last)
+            last[0].current = True
+            last[0].save()
         return super().form_valid(form)
     
     def get_context_data(self, **kwards):
         context_data = super().get_context_data(**kwards)
-        RecordFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        ProductFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
         if self.request.method == "POST":
-            context_data['formset'] = RecordFormset(self.request.POST, instance=self.object)
+            context_data['formset'] = ProductFormset(self.request.POST, instance=self.object)
         else:
-            context_data['formset'] = RecordFormset(instance=self.object)
+            context_data['formset'] = ProductFormset(instance=self.object)
         return context_data
 
     def get_success_url(self):
