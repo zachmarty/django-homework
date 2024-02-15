@@ -62,6 +62,14 @@ class ProductUpdateView(UpdateView):
 
 class ProductDetailView(DetailView):
     model = Product
+    
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        versions = Version.objects.filter(product = self.object)
+        last = sorted(versions, key=lambda x: x.add_date, reverse=True)
+        if len(last)>0:
+            context['last'] = last[0]
+        return context
 
 
 class ProductDeleteView(DeleteView):

@@ -19,6 +19,19 @@
           </div>
         </div>
       </div>
+      {% if last %}
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">
+              <h2>Последнее изменение</h2>
+            </div>
+            <div class="card-body">
+              <h4>{{ last.v_name }}</h4>
+              <h4>{{ last.add_date }}</h4>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}
