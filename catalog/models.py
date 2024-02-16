@@ -1,6 +1,8 @@
 from django.db import models
 import datetime
 
+from users.models import User
+
 NULLABLE = {"blank": True, "null": True}
 # Create your models here.
 
@@ -46,6 +48,13 @@ class Product(models.Model):
     last_fix_date = models.DateTimeField(
         auto_now=True, null=False, blank=False, verbose_name="Изменено"
     )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        verbose_name="Пользователь",
+    )
 
     def __str__(self) -> str:
         return f"{self.id} {self.name} {self.price} {self.category}"
@@ -61,8 +70,8 @@ class Version(models.Model):
     v_number = models.IntegerField(default=1)
     v_name = models.CharField(max_length=100, default="changed")
     current = models.BooleanField(default=True)
-    add_date = models.DateTimeField(default = datetime.datetime.now)
-    
+    add_date = models.DateTimeField(default=datetime.datetime.now)
+
     class Meta:
         verbose_name = "Версия"
         verbose_name_plural = "Версии"

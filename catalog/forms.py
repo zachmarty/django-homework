@@ -1,9 +1,10 @@
 from django import forms
 
 from catalog.models import Product, Version
+from users.forms import StyleFormMixin
 
 
-class ProductForm(forms.ModelForm):
+class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
         fields = ("name", "description", "image", "category", "price")
@@ -46,7 +47,7 @@ class ProductForm(forms.ModelForm):
             
         return cleaned_data
     
-class VersionForm(forms.ModelForm):
+class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Version
         fields = ("v_name", "v_number")
