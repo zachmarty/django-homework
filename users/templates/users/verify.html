@@ -1,9 +1,16 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
   <form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
     <div class="card align-items-center">
-      <h4 class="mb-2">Введите ключ для верификации</h4>
-      <btn class="btn btn-success" type="submit">Подтвердить</btn>
+      <div class="card-header">
+        <h4 class="mb-2">Введите ключ для верификации</h4>
+      </div>
+      <div class="card-body">
+        <input name="key" class="form-control" />
+        <btn class="btn btn-success" type="submit">Подтвердить</btn>
+      </div>
     </div>
   </form>
 {% endblock %}
