@@ -34,6 +34,7 @@ class RegisterView(CreateView):
 class VerifyView(TemplateView):
     template_name = 'users/verify.html'
     success_url = reverse_lazy("users:profile")
+    http_method_names = ["post", "get"]
     
     def form_valid(self, form):
         
@@ -45,6 +46,8 @@ class VerifyView(TemplateView):
         else:
             raise ValidationError(form.data['key'].error_message['invalid'])
     
+    def post(self, request, *args, **kwargs):
+        return render(request, "users/user_form.html")
     
     
 
