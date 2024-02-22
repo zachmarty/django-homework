@@ -14,6 +14,7 @@ from django.views.generic import (
 from django.urls import reverse, reverse_lazy
 from catalog.forms import ProductForm, VersionForm
 from django.forms import inlineformset_factory
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class ProductListView(ListView):
@@ -25,16 +26,12 @@ class ProductListView(ListView):
         return context_data
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:index")
+    login_url = reverse_lazy("users:login")
 
-    def get(self, request, *args: str, **kwargs: Any):
-        if self.request.user.is_authenticated:
-            return super().get(request, *args, **kwargs)
-        else:
-            return render(request, "catalog/need.html")
             
     def form_valid(self, form):
         print(self.request.user.id)
@@ -48,15 +45,11 @@ class ProductCreateView(CreateView):
     
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
 
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if self.request.user.is_authenticated:
-            return super().get(request, *args, **kwargs)
-        else:
-            reverse_lazy("catalog:need")
+    login_url = reverse_lazy("users:login")
             
     def form_valid(self, form):
         formset = self.get_context_data()["formset"]
@@ -92,7 +85,7 @@ class ProductUpdateView(UpdateView):
         return reverse("catalog:view", args=[self.kwargs.get("pk")])
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
     def get_context_data(self, **kwargs: Any):
@@ -103,22 +96,14 @@ class ProductDetailView(DetailView):
             context["last"] = last[0]
         return context
     
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if self.request.user.is_authenticated:
-            return super().get(request, *args, **kwargs)
-        else:
-            return render(request, "catalog/need.html")
+    login_url = reverse_lazy("users:login")
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy("catalog:index")
     
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if self.request.user.is_authenticated:
-            return super().get(request, *args, **kwargs)
-        else:
-            return render(request, "catalog/need.html")
+    login_url = reverse_lazy("users:login")
 
 
 class ProductContacts(TemplateView):
@@ -139,7 +124,7 @@ class ProductThanks(TemplateView):
 
 class ProductAuth(TemplateView):
     model = Product
-    http_method_names = ["post"]
+    http_method_names = ["post", "get"]
 
     def post(self, request, *args, **kwargs):
         return render(request, "catalog/need.html")
