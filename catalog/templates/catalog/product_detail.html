@@ -15,7 +15,9 @@
           </div>
           <div class="card-footer">
             <a type="submit" class="btn btn-primary" href="{% url 'catalog:index' %}">Назад</a>
+            {% if  perms.catalog.change_product%}
             <a type="submit" class="btn btn-primary" href="{% url 'catalog:edit' product.pk %}">Редактировать</a>
+            {% endif %}
           </div>
         </div>
       </div>

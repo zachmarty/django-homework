@@ -14,12 +14,16 @@
               <div class="row">
                 <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:view' product.id %}">Подробнее</a>
               </div>
+              {% if  perms.catalog.change_product%}
               <div class="row">
                 <a class="p-2 btn btn-outline-secondary" href="{% url 'catalog:edit' product.id %}">Редактировать</a>
               </div>
-              <div class="row">
-                <a class="p-2 btn btn-outline-danger" href="{% url 'catalog:delete' product.id %}">Удалить</a>
-              </div>
+              {% endif %}
+              {% if perms.catalog.delete_product %}
+                <div class="row">
+                  <a class="p-2 btn btn-outline-danger" href="{% url 'catalog:delete' product.id %}">Удалить</a>
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>

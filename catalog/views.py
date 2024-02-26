@@ -1,6 +1,7 @@
 from typing import Any
+from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
 from catalog.models import Product, Version
 from django.views.generic import (
@@ -14,7 +15,7 @@ from django.views.generic import (
 from django.urls import reverse, reverse_lazy
 from catalog.forms import ProductForm, VersionForm
 from django.forms import inlineformset_factory
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 class ProductListView(ListView):
@@ -30,7 +31,6 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:index")
-    login_url = reverse_lazy("users:login")
 
             
     def form_valid(self, form):
@@ -45,11 +45,17 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
-
-    login_url = reverse_lazy("users:login")
+    permission_required = 'catalog.change_product'
+    
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.user != self.request.user:
+            raise Http404
+        
+        return self.object
             
     def form_valid(self, form):
         formset = self.get_context_data()["formset"]
@@ -87,7 +93,6 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
-
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         versions = Version.objects.filter(product=self.object)
@@ -95,15 +100,19 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
         if len(last) > 0:
             context["last"] = last[0]
         return context
-    
-    login_url = reverse_lazy("users:login")
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy("catalog:index")
+    permission_required = 'catalog.delete_product'
     
-    login_url = reverse_lazy("users:login")
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.user != self.request.user:
+            raise Http404
+        
+        return self.object
 
 
 class ProductContacts(TemplateView):

@@ -9,6 +9,7 @@ from users.models import User
 from users.forms import UserProfileForm, UserRegisterForm
 from django.core.mail import send_mail
 import secrets
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class RegisterView(CreateView):
@@ -51,7 +52,7 @@ class VerifyView(TemplateView):
 
 
 
-class ProfileView(UpdateView):
+class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy("users:profile")
