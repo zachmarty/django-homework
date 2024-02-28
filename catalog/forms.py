@@ -4,6 +4,30 @@ from catalog.models import Product, Version
 from users.forms import StyleFormMixin
 
 
+class ModerProductForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ("description", "category", "publicated")
+        
+    def clean_description(self):
+        cleaned_data = self.cleaned_data["description"]
+        ban_words = [
+            "казино",
+            "криптовалюса",
+            "крипта",
+            "биржа",
+            "дешево",
+            "бесплатно",
+            "обман",
+            "полиция",
+            "радар",
+        ]
+        for word in ban_words:
+            if word in cleaned_data.lower():
+                raise forms.ValidationError("Запретка в описании продукта")
+            
+        return cleaned_data
+
 class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product

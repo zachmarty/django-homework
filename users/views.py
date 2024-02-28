@@ -10,6 +10,7 @@ from users.forms import UserProfileForm, UserRegisterForm
 from django.core.mail import send_mail
 import secrets
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Group
 
 
 class RegisterView(CreateView):
@@ -43,7 +44,9 @@ class VerifyView(TemplateView):
         key = request.POST["key"]
         try:
             user = User.objects.get(verify_key = key)
+            group = Group.objects.get(name = 'users')
             user.is_active = True
+            user.groups.add(group)
             user.save()
             return HttpResponseRedirect(reverse_lazy("users:login"))
         except:

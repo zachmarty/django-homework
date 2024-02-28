@@ -55,6 +55,7 @@ class Product(models.Model):
         null=False,
         verbose_name="Пользователь",
     )
+    publicated = models.BooleanField(default=False, verbose_name="Признак публикации")
 
     def __str__(self) -> str:
         return f"{self.id} {self.name} {self.price} {self.category}"

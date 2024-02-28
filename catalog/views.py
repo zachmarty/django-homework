@@ -1,6 +1,7 @@
 from typing import Any
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
+from django.forms.models import BaseModelForm
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
 from catalog.models import Product, Version
@@ -13,7 +14,7 @@ from django.views.generic import (
     TemplateView,
 )
 from django.urls import reverse, reverse_lazy
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ModerProductForm, ProductForm, VersionForm
 from django.forms import inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -25,6 +26,11 @@ class ProductListView(ListView):
         context_data = super().get_context_data(**kwards)
         context_data['user'] = self.request.user
         return context_data
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(publicated=True)
+        return queryset
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -37,6 +43,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         print(self.request.user.id)
         new_product = form.save(commit=False)
         new_product.user = self.request.user
+        new_product.publicated = True
         new_product.save()
         return super().form_valid(form)
     
@@ -47,15 +54,19 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
-    form_class = ProductForm
     permission_required = 'catalog.change_product'
     
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        if self.object.user != self.request.user:
+        if self.object.user != self.request.user and not self.request.user.is_staff:
             raise Http404
-        
         return self.object
+    
+    def get_form_class(self) -> type[BaseModelForm]:
+        if self.request.user.is_staff:
+            return ModerProductForm
+        else:
+            return ProductForm
             
     def form_valid(self, form):
         formset = self.get_context_data()["formset"]
