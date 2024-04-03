@@ -17,6 +17,9 @@ from django.urls import reverse, reverse_lazy
 from catalog.forms import ModerProductForm, ProductForm, VersionForm
 from django.forms import inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
+from config import settings
+from catalog.services import get_category_list
 
 
 class ProductListView(ListView):
@@ -25,6 +28,7 @@ class ProductListView(ListView):
     def get_context_data(self, **kwards):
         context_data = super().get_context_data(**kwards)
         context_data['user'] = self.request.user
+        context_data['categories'] = get_category_list()
         return context_data
     
     def get_queryset(self):
@@ -47,6 +51,10 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         new_product.save()
         return super().form_valid(form)
     
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['categories'] = get_category_list()
+        return context
     
             
     
@@ -96,6 +104,7 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             )
         else:
             context_data["formset"] = ProductFormset(instance=self.object)
+        context_data['categories'] = get_category_list()
         return context_data
 
     def get_success_url(self):
@@ -106,11 +115,32 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
-        versions = Version.objects.filter(product=self.object)
-        last = sorted(versions, key=lambda x: x.add_date, reverse=True)
-        if len(last) > 0:
-            context["last"] = last[0]
+        context['categories'] = get_category_list()
+        if settings.CACHE_ENABLED:
+            key = f'last_{self.object.pk}'
+            last = cache.get(key)
+            if last is None:
+                list = self.object.version_set.all()
+                last = sorted(list, key=lambda x: x.add_date, reverse=True)[0]
+                cache.set(key, last)
+        else:
+            list = self.object.version_set.all()
+            last = sorted(list, key=lambda x: x.add_date, reverse=True)[0]
+        
+        context["last"] = last
         return context
+    
+    
+    def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
+        if settings.CACHE_ENABLED:
+            key = f'object_{self.kwargs["pk"]}'
+            object = cache.get(key)
+            if object is None:
+                object = Product.objects.get(pk = self.kwargs['pk'])
+                cache.set(key, object)
+        else:
+            object = Product.objects.get(pk = self.kwargs['pk'])
+        return object
 
 
 class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -124,6 +154,11 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
             raise Http404
         
         return self.object
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['categories'] = get_category_list()
+        return context
 
 
 class ProductContacts(TemplateView):
@@ -132,6 +167,11 @@ class ProductContacts(TemplateView):
 
     def get(self, request, *args, **kwards):
         return render(request, "catalog/contacts.html")
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['categories'] = get_category_list()
+        return context
 
 
 class ProductThanks(TemplateView):
@@ -148,3 +188,8 @@ class ProductAuth(TemplateView):
 
     def post(self, request, *args, **kwargs):
         return render(request, "catalog/need.html")
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['categories'] = get_category_list()
+        return context
